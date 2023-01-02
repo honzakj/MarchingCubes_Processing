@@ -3,10 +3,10 @@
 ### Simple marching cubes algorithm written in Processing
 
 Edge interpolation added for smoother results.<br><br>
-If you don't want interpolated results change line 98 in cube.pde:
+If you don't want interpolated results change line 98 in cube.pde to:
 
 ```
-    intPoint = PVector.lerp(a, b, abs(intFactor)); -> intPoint = PVector.lerp(a, b, 0.5);
+    intPoint = PVector.lerp(a, b, 0.5);
 ```
 
 
