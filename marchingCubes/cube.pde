@@ -94,6 +94,7 @@ class Cube {
       intFactor = 0.5;
     }
     
+    intFactor = constraint(intFactor, 0, 1);
     intPoint = PVector.lerp(a, b, abs(intFactor));
     
     return intPoint;
