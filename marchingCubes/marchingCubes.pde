@@ -14,6 +14,7 @@ Cube[][][] cubes;
 int multiplier = 10;
 int marching = 0;
 
+float isoVal = 0.2;
 
 void initCam() {
   cam = new PeasyCam(this, 75);

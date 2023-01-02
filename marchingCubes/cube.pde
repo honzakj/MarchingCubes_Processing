@@ -1,8 +1,8 @@
 class Cube {
   float x, y, z;
   PVector[] points = new PVector[8];
-  PVector[] midpoints = new PVector[12];
-  PVector[] newMidpoints = new PVector[12];
+  PVector[] intPoint = new PVector[12];
+  PVector[] newintPoint = new PVector[12];
 
   Cube(float _x, float _y, float _z) {
     // First point is bottom left
@@ -37,18 +37,18 @@ class Cube {
     points[6] = new PVector(x+1, y+1, z+1);
     points[7] = new PVector(x, y+1, z+1);
     
-    midpoints[0] = findMidpoint(points[0],points[1]);
-    midpoints[1] = findMidpoint(points[1],points[2]);
-    midpoints[2] = findMidpoint(points[2],points[3]);
-    midpoints[3] = findMidpoint(points[0],points[3]);
-    midpoints[4] = findMidpoint(points[4],points[5]);
-    midpoints[5] = findMidpoint(points[5],points[6]);
-    midpoints[6] = findMidpoint(points[6],points[7]);
-    midpoints[7] = findMidpoint(points[7],points[4]);
-    midpoints[8] = findMidpoint(points[0],points[4]);
-    midpoints[9] = findMidpoint(points[1],points[5]);
-    midpoints[10] = findMidpoint(points[2],points[6]);
-    midpoints[11] = findMidpoint(points[3],points[7]);
+    intPoint[0] = interpolatePoint(points[0],points[1]);
+    intPoint[1] = interpolatePoint(points[1],points[2]);
+    intPoint[2] = interpolatePoint(points[3],points[2]);
+    intPoint[3] = interpolatePoint(points[0],points[3]);
+    intPoint[4] = interpolatePoint(points[4],points[5]);
+    intPoint[5] = interpolatePoint(points[5],points[6]);
+    intPoint[6] = interpolatePoint(points[7],points[6]);
+    intPoint[7] = interpolatePoint(points[4],points[7]);
+    intPoint[8] = interpolatePoint(points[0],points[4]);
+    intPoint[9] = interpolatePoint(points[1],points[5]);
+    intPoint[10] = interpolatePoint(points[2],points[6]);
+    intPoint[11] = interpolatePoint(points[3],points[7]);
     
 
   }
@@ -63,11 +63,12 @@ class Cube {
       PVector p = points[i];
       
 
-      /* KOSTKA
+      /* CUBE
       if (p.x >= boundarySize/2-2 && p.x <= boundarySize/2+2 && p.y >= boundarySize/2-2 && p.y <= boundarySize/2+2 && p.z >= boundarySize/2-2 && p.z <= boundarySize/2+2) {
         val = "1";
       } */
       
+      // SPHERE
       if( (p.x-(boundarySize/2))*(p.x-(boundarySize/2)) + (p.y-(boundarySize/2))*(p.y-(boundarySize/2)) + (p.z-(boundarySize/2))*(p.z-(boundarySize/2)) < 7) {
            val = "1";
       }     
@@ -81,8 +82,21 @@ class Cube {
     return unbinary(config);
   }
   
-  PVector findMidpoint(PVector a, PVector b) {
-    return new PVector((a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2);
+  PVector interpolatePoint(PVector a, PVector b) {
+    float aVal = 1;
+    float bVal = 0;
+    float intFactor;
+    PVector intPoint;
+    
+    if (aVal - bVal != 0) {
+      intFactor = (aVal - isoVal) / (aVal - bVal);
+    } else {
+      intFactor = 0.5;
+    }
+    
+    intPoint = PVector.lerp(a, b, abs(intFactor));
+    
+    return intPoint;
   }
   
   void triangulate() {
@@ -95,7 +109,7 @@ class Cube {
     beginShape(TRIANGLES);
     
     while (vert < 16 && triTable[config][vert] != -1) {
-      PVector v = midpoints[triTable[config][vert]];
+      PVector v = intPoint[triTable[config][vert]];
       vertex(v.x*multiplier,v.y*multiplier,v.z*multiplier);
       vert++;
     }
